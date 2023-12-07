@@ -5,7 +5,7 @@ from flask_marshmallow import Marshmallow
 
 app = Flask (__name__)
 
-app.config ['SQLALCHEMY_DATABASE_URI'] = "mysql://root:password@127.0.0.1:3306/employees"
+app.config ['SQLALCHEMY_DATABASE_URI'] = "mysql://root:Rubytiger5021@127.0.0.1:3306/employees"
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -26,7 +26,7 @@ class Employee(db.Model):
 
 class EmployeeSchema(ma.Schema):
     class Meta:
-        fields = ('EmployeeID', 'FirstName', 'LastName', 'EmailAddress', 'Country')
+        fields = ('id', 'first_name', 'last_name', 'email_addr', 'country')
 
 employee_schema = EmployeeSchema()
 employees_schema = EmployeeSchema(many=True)
@@ -51,7 +51,7 @@ def get_employees():
     result = employees_schema.dump(all_employees)
     return jsonify(result)
 
-@app.route('/employee/<EmployeeID>', methods=['GET'])
+@app.route('/employee/<id>', methods=['GET'])
 def get_employee(id):
     employee = Employee.query.get(id)
     return employee_schema.jsonify(employee)
