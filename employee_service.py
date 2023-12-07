@@ -14,7 +14,7 @@ ma = Marshmallow(app)
 class Employee(db.Model):
     id = db.Column('EmployeeID', db.Integer, primary_key = True)
     first_name = db.Column('FirstName', db.String(25))
-    last_name = db.Column('LastName', db.String(25))  
+    last_name = db.Column('LastName', db.String(25))
     email_addr = db.Column('EmailAddress', db.String(50))
     country = db.Column('Country', db.Integer)
 
@@ -24,13 +24,15 @@ class Employee(db.Model):
         self.email_addr = email_addr
         self.country = country
 
+#Create schema to display the Employee object
 class EmployeeSchema(ma.Schema):
     class Meta:
         fields = ('id', 'first_name', 'last_name', 'email_addr', 'country')
 
-employee_schema = EmployeeSchema()
-employees_schema = EmployeeSchema(many=True)
+employee_schema = EmployeeSchema() #singular Employee
+employees_schema = EmployeeSchema(many=True) #multiple Employees
 
+#Create new employee from JSON request and add to table
 @app.route('/employee', methods=['POST'])
 def add_employee():
     first_name = request.json['FirstName']
@@ -45,12 +47,14 @@ def add_employee():
 
     return employee_schema.jsonify(new_employee)
 
+#Return all Employees in table
 @app.route('/employee', methods=['GET'])
 def get_employees():
     all_employees = Employee.query.all()
     result = employees_schema.dump(all_employees)
     return jsonify(result)
 
+#Return employee with specified EmployeeID if possible
 @app.route('/employee/<id>', methods=['GET'])
 def get_employee(id):
     employee = Employee.query.get(id)
