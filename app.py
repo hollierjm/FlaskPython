@@ -1,11 +1,18 @@
 "Module providing employee service"
+import os
 from flask import Flask, request, jsonify
+import mysql.connector
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
-app = Flask (__name__)
+app = Flask(__name__)
 
-app.config ['SQLALCHEMY_DATABASE_URI'] = "mysql://root:password@127.0.0.1:3306/employees"
+#app.config["MYSQL_DATABASE_USER"] = "root"
+#app.config["MYSQL_DATABASE_PASSWORD"] = os.getenv("db_root_password")
+#app.config["MYSQL_DATABASE_DB"] = os.getenv("db_name")
+#app.config["MYSQL_DATABASE_HOST"] = os.getenv("MYSQL_SERVICE_HOST")
+#app.config["MYSQL_DATABASE_PORT"] = int(os.getenv("MYSQL_SERVICE_PORT"))
+app.config ['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:password@mysql:3306/employees"
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -31,6 +38,10 @@ class EmployeeSchema(ma.Schema):
 
 employee_schema = EmployeeSchema() #singular Employee
 employees_schema = EmployeeSchema(many=True) #multiple Employees
+
+@app.route('/')
+def display_peoplesuite():
+    return 'Displaying PeopleSuite'
 
 #Create new employee from JSON request and add to table
 @app.route('/employee', methods=['POST'])
@@ -61,4 +72,4 @@ def get_employee(id):
     return employee_schema.jsonify(employee)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0")

@@ -22,6 +22,7 @@ platformdirs==4.0.0
 protobuf==4.21.12
 psycopg2==2.9.9
 pylint==3.0.2
+PyMySQL==1.1.0
 SQLAlchemy==2.0.23
 tomli==2.0.1
 tomlkit==0.12.3
