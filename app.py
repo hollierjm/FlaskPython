@@ -24,7 +24,7 @@ class Employee(db.Model):
     last_name = db.Column('LastName', db.String(25))
     email_addr = db.Column('EmailAddress', db.String(50))
     country = db.Column('Country', db.Integer)
-
+    
     def __init__(self, first_name, last_name, email_addr, country):
         self.first_name = first_name
         self.last_name = last_name
@@ -46,17 +46,19 @@ def display_peoplesuite():
 #Create new employee from JSON request and add to table
 @app.route('/employee', methods=['POST'])
 def add_employee():
-    first_name = request.json['FirstName']
-    last_name = request.json['LastName']
-    email_addr = request.json['EmailAddress']
-    country = request.json['Country']
+    try:
+        first_name = request.json['FirstName']
+        last_name = request.json['LastName']
+        email_addr = request.json['EmailAddress']
+        country = request.json['Country']
 
-    new_employee = Employee(first_name, last_name, email_addr, country)
+        new_employee = Employee(first_name, last_name, email_addr, country)
+        db.session.add(new_employee)
+        db.session.commit()
 
-    db.session.add(new_employee)
-    db.session.commit()
-
-    return employee_schema.jsonify(new_employee)
+        return employee_schema.jsonify(new_employee)
+    except:
+        return employee_schema.jsonify(new_employee)
 
 #Return all Employees in table
 @app.route('/employee', methods=['GET'])
